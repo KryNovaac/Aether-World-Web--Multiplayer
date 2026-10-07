@@ -1,0 +1,6 @@
+{
+  "name": "Aether World-Web",
+  "description": "Eksplorasi dunia 3D Aetheria berbasis Babylon.js dengan sudut pandang 1st Person, 2nd Person, dan 3rd Person serta ekspor 1-file HTML.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

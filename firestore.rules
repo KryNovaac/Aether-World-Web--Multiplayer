@@ -1,0 +1,417 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Hardened Global Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidRoomCode(code) {
+      return code is string && code.size() >= 3 && code.size() <= 32 && code.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidShortCode(val) {
+      return val is string && val.size() >= 1 && val.size() <= 32 && val.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // 1. Validation Blueprint: UserProfile (/users/{userId})
+    function isValidUserProfile(data) {
+      return data.keys().hasAll([
+        'uid',
+        'displayName',
+        'modelId',
+        'colorTheme',
+        'hairColor',
+        'headwearId',
+        'topOutfitId',
+        'bottomPantsId',
+        'bodyAccessoryId',
+        'backAttachment',
+        'equippedTool',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'uid',
+        'displayName',
+        'modelId',
+        'colorTheme',
+        'hairColor',
+        'headwearId',
+        'topOutfitId',
+        'bottomPantsId',
+        'bodyAccessoryId',
+        'backAttachment',
+        'equippedTool',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      isValidId(data.uid) &&
+      data.uid == request.auth.uid &&
+      data.displayName is string &&
+      data.displayName.size() >= 2 &&
+      data.displayName.size() <= 24 &&
+      isValidShortCode(data.modelId) &&
+      isValidShortCode(data.colorTheme) &&
+      isValidShortCode(data.hairColor) &&
+      isValidShortCode(data.headwearId) &&
+      isValidShortCode(data.topOutfitId) &&
+      isValidShortCode(data.bottomPantsId) &&
+      isValidShortCode(data.bodyAccessoryId) &&
+      isValidShortCode(data.backAttachment) &&
+      isValidShortCode(data.equippedTool) &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 2. Validation Blueprint: PlayerWorldState (/players/{playerId})
+    function isValidPlayerWorldState(data) {
+      return data.keys().hasAll([
+        'uid',
+        'realmId',
+        'displayName',
+        'x',
+        'y',
+        'z',
+        'facingYaw',
+        'aimPitch',
+        'isMoving',
+        'isSprinting',
+        'isGrounded',
+        'isAttacking',
+        'isHolding',
+        'chargeRatio',
+        'modelId',
+        'colorTheme',
+        'hairColor',
+        'headwearId',
+        'topOutfitId',
+        'bottomPantsId',
+        'bodyAccessoryId',
+        'backAttachment',
+        'equippedTool',
+        'online',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'uid',
+        'realmId',
+        'displayName',
+        'x',
+        'y',
+        'z',
+        'facingYaw',
+        'aimPitch',
+        'isMoving',
+        'isSprinting',
+        'isGrounded',
+        'isAttacking',
+        'isHolding',
+        'chargeRatio',
+        'modelId',
+        'colorTheme',
+        'hairColor',
+        'headwearId',
+        'topOutfitId',
+        'bottomPantsId',
+        'bodyAccessoryId',
+        'backAttachment',
+        'equippedTool',
+        'online',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      isValidId(data.uid) &&
+      data.uid == request.auth.uid &&
+      isValidRoomCode(data.realmId) &&
+      data.displayName is string &&
+      data.displayName.size() >= 2 &&
+      data.displayName.size() <= 24 &&
+      data.x is number &&
+      data.x >= -250 &&
+      data.x <= 250 &&
+      data.y is number &&
+      data.y >= -50 &&
+      data.y <= 250 &&
+      data.z is number &&
+      data.z >= -250 &&
+      data.z <= 250 &&
+      data.facingYaw is number &&
+      data.aimPitch is number &&
+      data.isMoving is bool &&
+      data.isSprinting is bool &&
+      data.isGrounded is bool &&
+      data.isAttacking is bool &&
+      data.isHolding is bool &&
+      data.chargeRatio is number &&
+      data.chargeRatio >= 0 &&
+      data.chargeRatio <= 1 &&
+      isValidShortCode(data.modelId) &&
+      isValidShortCode(data.colorTheme) &&
+      isValidShortCode(data.hairColor) &&
+      isValidShortCode(data.headwearId) &&
+      isValidShortCode(data.topOutfitId) &&
+      isValidShortCode(data.bottomPantsId) &&
+      isValidShortCode(data.bodyAccessoryId) &&
+      isValidShortCode(data.backAttachment) &&
+      isValidShortCode(data.equippedTool) &&
+      data.online is bool &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 3. Validation Blueprint: RealmRoom (/realms/{realmId})
+    function isValidRealmRoom(data) {
+      return data.keys().hasAll([
+        'realmId',
+        'roomName',
+        'hostUid',
+        'hostName',
+        'seasonMode',
+        'weatherMode',
+        'activePlayerIds',
+        'lastMessageId',
+        'lastMessageSender',
+        'lastMessageUid',
+        'lastMessageText',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'realmId',
+        'roomName',
+        'hostUid',
+        'hostName',
+        'seasonMode',
+        'weatherMode',
+        'activePlayerIds',
+        'lastMessageId',
+        'lastMessageSender',
+        'lastMessageUid',
+        'lastMessageText',
+        'createdAt',
+        'updatedAt'
+      ]) &&
+      isValidRoomCode(data.realmId) &&
+      data.roomName is string &&
+      data.roomName.size() >= 2 &&
+      data.roomName.size() <= 32 &&
+      isValidId(data.hostUid) &&
+      data.hostName is string &&
+      data.hostName.size() >= 2 &&
+      data.hostName.size() <= 24 &&
+      isValidShortCode(data.seasonMode) &&
+      isValidShortCode(data.weatherMode) &&
+      data.activePlayerIds is list &&
+      data.activePlayerIds.size() >= 1 &&
+      data.activePlayerIds.size() <= 10 &&
+      data.activePlayerIds[0] is string &&
+      data.activePlayerIds[0].size() >= 1 &&
+      data.activePlayerIds[0].size() <= 128 &&
+      isValidId(data.lastMessageId) &&
+      data.lastMessageSender is string &&
+      data.lastMessageSender.size() >= 1 &&
+      data.lastMessageSender.size() <= 24 &&
+      isValidId(data.lastMessageUid) &&
+      data.lastMessageText is string &&
+      data.lastMessageText.size() >= 1 &&
+      data.lastMessageText.size() <= 160 &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // Collection 1: /users/{userId}
+    match /users/{userId} {
+      allow get: if isVerifiedUser() && isValidId(userId) && userId == request.auth.uid;
+      allow list: if false;
+
+      allow create: if isVerifiedUser() &&
+        isValidId(userId) &&
+        userId == request.auth.uid &&
+        isValidUserProfile(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if (
+        isVerifiedUser() &&
+        isValidId(userId) &&
+        userId == request.auth.uid &&
+        isValidUserProfile(incoming()) &&
+        existing().uid == request.auth.uid &&
+        incoming().uid == existing().uid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          // Action 1: Update Nickname & Wardrobe Customization
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'displayName',
+            'modelId',
+            'colorTheme',
+            'hairColor',
+            'headwearId',
+            'topOutfitId',
+            'bottomPantsId',
+            'bodyAccessoryId',
+            'backAttachment',
+            'equippedTool',
+            'updatedAt'
+          ])
+        )
+      );
+
+      allow delete: if false;
+    }
+
+    // Collection 2: /players/{playerId}
+    match /players/{playerId} {
+      allow get: if isVerifiedUser() &&
+        isValidId(playerId) &&
+        (
+          playerId == request.auth.uid ||
+          (
+            exists(/databases/$(database)/documents/players/$(request.auth.uid)) &&
+            get(/databases/$(database)/documents/players/$(request.auth.uid)).data.realmId == existing().realmId
+          )
+        );
+      allow list: if false;
+
+      allow create: if isVerifiedUser() &&
+        isValidId(playerId) &&
+        playerId == request.auth.uid &&
+        isValidPlayerWorldState(incoming()) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if (
+        isVerifiedUser() &&
+        isValidId(playerId) &&
+        playerId == request.auth.uid &&
+        isValidPlayerWorldState(incoming()) &&
+        existing().uid == request.auth.uid &&
+        incoming().uid == existing().uid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          // Action 1: Live Movement, Room Switch, Combat & Wardrobe Sync
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'realmId',
+            'displayName',
+            'x',
+            'y',
+            'z',
+            'facingYaw',
+            'aimPitch',
+            'isMoving',
+            'isSprinting',
+            'isGrounded',
+            'isAttacking',
+            'isHolding',
+            'chargeRatio',
+            'modelId',
+            'colorTheme',
+            'hairColor',
+            'headwearId',
+            'topOutfitId',
+            'bottomPantsId',
+            'bodyAccessoryId',
+            'backAttachment',
+            'equippedTool',
+            'online',
+            'updatedAt'
+          ])
+        )
+      );
+
+      allow delete: if isVerifiedUser() &&
+        isValidId(playerId) &&
+        playerId == request.auth.uid &&
+        existing().uid == request.auth.uid;
+    }
+
+    // Collection 3: /realms/{realmId}
+    match /realms/{realmId} {
+      allow get: if isVerifiedUser() && isValidRoomCode(realmId);
+      allow list: if false;
+
+      allow create: if isVerifiedUser() &&
+        isValidRoomCode(realmId) &&
+        isValidRealmRoom(incoming()) &&
+        incoming().realmId == realmId &&
+        incoming().hostUid == request.auth.uid &&
+        incoming().lastMessageUid == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        exists(/databases/$(database)/documents/players/$(request.auth.uid));
+
+      allow update: if (
+        isVerifiedUser() &&
+        isValidRoomCode(realmId) &&
+        isValidRealmRoom(incoming()) &&
+        incoming().realmId == existing().realmId &&
+        incoming().hostUid == existing().hostUid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        exists(/databases/$(database)/documents/players/$(request.auth.uid)) && (
+          // Tier 1 Action: World/Room Host Admin Updates Environment, Roster, or Chat
+          (
+            existing().hostUid == request.auth.uid &&
+            incoming().diff(existing()).affectedKeys().hasOnly([
+              'roomName',
+              'hostName',
+              'seasonMode',
+              'weatherMode',
+              'activePlayerIds',
+              'lastMessageId',
+              'lastMessageSender',
+              'lastMessageUid',
+              'lastMessageText',
+              'updatedAt'
+            ])
+          ) ||
+          // Tier 2 Action: Member Joins / Leaves Active Player Roster
+          (
+            incoming().diff(existing()).affectedKeys().hasOnly([
+              'activePlayerIds',
+              'updatedAt'
+            ])
+          ) ||
+          // Tier 3 Action: Member Sends Real-Time Chat Message in Room
+          (
+            incoming().lastMessageUid == request.auth.uid &&
+            incoming().diff(existing()).affectedKeys().hasOnly([
+              'activePlayerIds',
+              'lastMessageId',
+              'lastMessageSender',
+              'lastMessageUid',
+              'lastMessageText',
+              'updatedAt'
+            ])
+          )
+        )
+      );
+
+      allow delete: if false;
+    }
+  }
+}

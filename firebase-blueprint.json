@@ -1,0 +1,397 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Stores a player's persistent public profile, display nickname, and 3D dummy character wardrobe configuration without any PII.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the player.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Player nickname displayed above the 3D character head.",
+          "minLength": 2,
+          "maxLength": 24
+        },
+        "modelId": {
+          "type": "string",
+          "description": "Selected character archetype preset ID.",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "colorTheme": {
+          "type": "string",
+          "description": "Selected armor and outfit color theme ID.",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "hairColor": {
+          "type": "string",
+          "description": "Selected hair color ID.",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "headwearId": {
+          "type": "string",
+          "description": "Selected headwear, hair, hat, or helmet ID.",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "topOutfitId": {
+          "type": "string",
+          "description": "Selected upper body clothing style ID.",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "bottomPantsId": {
+          "type": "string",
+          "description": "Selected lower body pants style ID.",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "bodyAccessoryId": {
+          "type": "string",
+          "description": "Selected body accessory ID.",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "backAttachment": {
+          "type": "string",
+          "description": "Selected back attachment ID.",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "equippedTool": {
+          "type": "string",
+          "description": "Currently equipped weapon tool ID.",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation server timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update server timestamp."
+        }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "modelId",
+        "colorTheme",
+        "hairColor",
+        "headwearId",
+        "topOutfitId",
+        "bottomPantsId",
+        "bodyAccessoryId",
+        "backAttachment",
+        "equippedTool",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PlayerWorldState": {
+      "title": "PlayerWorldState",
+      "description": "Real-time 3D multiplayer state for an active player in a specific World/Room code.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Authenticated player UID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "realmId": {
+          "type": "string",
+          "description": "World/Room code the player is currently inside.",
+          "minLength": 3,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Nickname displayed above the character head.",
+          "minLength": 2,
+          "maxLength": 24
+        },
+        "x": {
+          "type": "number",
+          "description": "World X coordinate (-250 to 250)."
+        },
+        "y": {
+          "type": "number",
+          "description": "World Y coordinate (-50 to 250)."
+        },
+        "z": {
+          "type": "number",
+          "description": "World Z coordinate (-250 to 250)."
+        },
+        "facingYaw": {
+          "type": "number",
+          "description": "Character horizontal rotation in radians."
+        },
+        "aimPitch": {
+          "type": "number",
+          "description": "Camera and weapon aim pitch in radians."
+        },
+        "isMoving": {
+          "type": "boolean",
+          "description": "Whether the player is walking or running."
+        },
+        "isSprinting": {
+          "type": "boolean",
+          "description": "Whether the player is sprinting."
+        },
+        "isGrounded": {
+          "type": "boolean",
+          "description": "Whether the player is on the ground."
+        },
+        "isAttacking": {
+          "type": "boolean",
+          "description": "Whether the player is performing a weapon attack."
+        },
+        "isHolding": {
+          "type": "boolean",
+          "description": "Whether the player is holding a bow draw or spear charge."
+        },
+        "chargeRatio": {
+          "type": "number",
+          "description": "Weapon charge ratio from 0.0 to 1.0."
+        },
+        "modelId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "colorTheme": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "hairColor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "headwearId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "topOutfitId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "bottomPantsId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "bodyAccessoryId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "backAttachment": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "equippedTool": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "online": {
+          "type": "boolean",
+          "description": "Whether the player is actively connected."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "uid",
+        "realmId",
+        "displayName",
+        "x",
+        "y",
+        "z",
+        "facingYaw",
+        "aimPitch",
+        "isMoving",
+        "isSprinting",
+        "isGrounded",
+        "isAttacking",
+        "isHolding",
+        "chargeRatio",
+        "modelId",
+        "colorTheme",
+        "hairColor",
+        "headwearId",
+        "topOutfitId",
+        "bottomPantsId",
+        "bodyAccessoryId",
+        "backAttachment",
+        "equippedTool",
+        "online",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "RealmRoom": {
+      "title": "RealmRoom",
+      "description": "Multiplayer World/Room created by a host/admin with a unique join code, bounded active player roster, and live chat broadcast state.",
+      "type": "object",
+      "properties": {
+        "realmId": {
+          "type": "string",
+          "description": "Unique Room/World code generated by the host/admin.",
+          "minLength": 3,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "roomName": {
+          "type": "string",
+          "description": "Display name of the World/Room.",
+          "minLength": 2,
+          "maxLength": 32
+        },
+        "hostUid": {
+          "type": "string",
+          "description": "UID of the World/Room creator/admin.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "hostName": {
+          "type": "string",
+          "description": "Nickname of the World/Room creator/admin.",
+          "minLength": 2,
+          "maxLength": 24
+        },
+        "seasonMode": {
+          "type": "string",
+          "description": "Current season set by the World host.",
+          "minLength": 1,
+          "maxLength": 16,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "weatherMode": {
+          "type": "string",
+          "description": "Current weather set by the World host.",
+          "minLength": 1,
+          "maxLength": 16,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "activePlayerIds": {
+          "type": "array",
+          "description": "Bounded list (max 10) of active player UIDs in this World/Room."
+        },
+        "lastMessageId": {
+          "type": "string",
+          "description": "Unique ID of the latest chat message in this room.",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "lastMessageSender": {
+          "type": "string",
+          "description": "Nickname of the player who sent the latest chat message.",
+          "minLength": 1,
+          "maxLength": 24
+        },
+        "lastMessageUid": {
+          "type": "string",
+          "description": "UID of the player who sent the latest chat message.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "lastMessageText": {
+          "type": "string",
+          "description": "Content of the latest chat message (max 160 chars).",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "realmId",
+        "roomName",
+        "hostUid",
+        "hostName",
+        "seasonMode",
+        "weatherMode",
+        "activePlayerIds",
+        "lastMessageId",
+        "lastMessageSender",
+        "lastMessageUid",
+        "lastMessageText",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "Stores persistent user profile and 3D character wardrobe."
+    },
+    "/players/{playerId}": {
+      "schema": {
+        "$ref": "#/entities/PlayerWorldState"
+      },
+      "description": "Stores live 3D position, rotation, and animation state for each active player in a World/Room."
+    },
+    "/realms/{realmId}": {
+      "schema": {
+        "$ref": "#/entities/RealmRoom"
+      },
+      "description": "Stores World/Room metadata, host UID, bounded active player roster (max 10), and real-time room chat state."
+    }
+  }
+}
